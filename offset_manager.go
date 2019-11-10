@@ -419,6 +419,7 @@ type PartitionOffsetManager interface {
 	// `config.Consumer.Offsets.Initial` and an empty metadata string if no offset
 	// was committed for this partition yet.
 	NextOffset() (int64, string)
+	GetMemberID() string
 
 	// MarkOffset marks the provided offset, alongside a metadata string
 	// that represents the state of the partition consumer at that point in time. The
@@ -526,6 +527,10 @@ func (pom *partitionOffsetManager) updateCommitted(offset int64, metadata string
 	if pom.offset == offset && pom.metadata == metadata {
 		pom.dirty = false
 	}
+}
+
+func (pom *partitionOffsetManager) GetMemberID() (string) {
+	return pom.parent.memberID
 }
 
 func (pom *partitionOffsetManager) NextOffset() (int64, string) {
